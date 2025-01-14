@@ -1,7 +1,5 @@
 package com.phoniler.kinggoring
 
-interface Platform {
-    val name: String
-}
+expect class PlatformStorableImage
 
-expect fun getPlatform(): Platform
+expect fun createUUID(): String

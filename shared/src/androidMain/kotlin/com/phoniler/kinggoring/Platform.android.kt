@@ -1,9 +1,12 @@
 package com.phoniler.kinggoring
 
-import android.os.Build
+import androidx.compose.ui.graphics.ImageBitmap
+import java.util.UUID
 
-class AndroidPlatform : Platform {
-    override val name: String = "Android ${Build.VERSION.SDK_INT}"
-}
+class AndroidStorableImage(
+    val imageBitmap: ImageBitmap,
+)
 
-actual fun getPlatform(): Platform = AndroidPlatform()
+actual fun createUUID(): String = UUID.randomUUID().toString()
+
+actual typealias PlatformStorableImage = AndroidStorableImage
