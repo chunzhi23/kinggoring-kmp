@@ -37,7 +37,7 @@ import com.google.android.gms.location.LocationServices
 import com.phoniler.kinggoring.AndroidStorableImage
 import com.phoniler.kinggoring.PlatformStorableImage
 import com.phoniler.kinggoring.component.CircularButton
-import com.phoniler.kinggoring.icon.IconOutlinedCamera
+import com.phoniler.kinggoring.icon.IconCamera
 import com.phoniler.kinggoring.model.GpsPosition
 import com.phoniler.kinggoring.model.PictureData
 import com.phoniler.kinggoring.model.createCameraPictureData
@@ -144,7 +144,7 @@ private fun CameraWithGrantedPermission(
     ) {
         AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
         CircularButton(
-            imageVector = IconOutlinedCamera,
+            imageVector = IconCamera,
             modifier = Modifier.align(Alignment.BottomCenter).padding(36.dp),
             enabled = !capturePhotoStarted,
         ) {

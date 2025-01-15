@@ -3,6 +3,7 @@ package com.phoniler.kinggoring.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -13,7 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.phoniler.kinggoring.icon.IconOutlinedArrowBack
+import com.phoniler.kinggoring.icon.IconArrowBack
 
 @Composable
 fun CircularButton(
@@ -50,7 +51,7 @@ fun CircularButton(
     CircularButton(
         modifier = modifier,
         content = {
-            Icon(imageVector, null, Modifier.size(64.dp), Color.Black)
+            Icon(imageVector, null, Modifier.fillMaxSize(), Color.Black)
         },
         enabled = enabled,
         onClick = onClick,
@@ -60,7 +61,8 @@ fun CircularButton(
 @Composable
 fun BackButton(onClick: () -> Unit) {
     CircularButton(
-        imageVector = IconOutlinedArrowBack,
+        imageVector = IconArrowBack,
+        modifier = Modifier.size(48.dp),
         onClick = onClick,
     )
 }

@@ -9,10 +9,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val IconOutlinedForkSpoon =
+val IconForkSpoon =
     ImageVector
         .Builder(
-            name = "Outlined.ForkSpoon",
+            name = "Filled.ForkSpoon",
             defaultWidth = 24.dp,
             defaultHeight = 24.dp,
             viewportWidth = 960f,
