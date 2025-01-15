@@ -6,13 +6,22 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.phoniler.kinggoring.view.KinggoRingAndroid
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 class MainActivity : ComponentActivity() {
+    private val externalEvents =
+        MutableSharedFlow<ExternalKinggoRingEvent>(
+            replay = 0,
+            extraBufferCapacity = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            KinggoRingAndroid()
+            KinggoRingAndroid(externalEvents)
         }
     }
 }
@@ -20,5 +29,12 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    KinggoRingAndroid()
+    val externalEvents =
+        MutableSharedFlow<ExternalKinggoRingEvent>(
+            replay = 0,
+            extraBufferCapacity = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        )
+
+    KinggoRingAndroid(externalEvents)
 }

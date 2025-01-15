@@ -5,7 +5,11 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.phoniler.kinggoring.model.AnalBloodSugarPage
 import com.phoniler.kinggoring.model.AnalExercisePage
 import com.phoniler.kinggoring.model.AnalInsulinPage
@@ -14,6 +18,7 @@ import com.phoniler.kinggoring.model.CameraPage
 import com.phoniler.kinggoring.model.ChatPage
 import com.phoniler.kinggoring.model.MainPage
 import com.phoniler.kinggoring.model.Page
+import com.phoniler.kinggoring.model.PictureData
 import com.phoniler.kinggoring.model.TaggedPage
 import com.phoniler.kinggoring.view.AnalBloodSugarScreen
 import com.phoniler.kinggoring.view.AnalExerciseScreen
@@ -25,11 +30,50 @@ import com.phoniler.kinggoring.view.MainScreen
 import com.phoniler.kinggoring.view.NavigationStack
 import com.phoniler.kinggoring.view.TaggedScreen
 
+enum class ExternalKinggoRingEvent {
+    Next,
+    Previous,
+    ReturnBack,
+}
+
 @Composable
-fun KinggoRingCommon() {
+fun KinggoRingCommon(dependencies: Dependencies) {
+    CompositionLocalProvider(
+        LocalImageProvider provides dependencies.imageProvider,
+        LocalInternalEvents provides dependencies.externalEvents,
+    ) {
+        KinggoRingWithProvidedDependencies(dependencies.pictures)
+    }
+}
+
+@Composable
+fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>) {
+    val selectedPictureIndex = rememberSaveable { mutableStateOf(0) }
+    val navigationStackSaver =
+        Saver<NavigationStack<Page>, List<String>>(
+            save = { it.stack.map { page -> page::class.simpleName ?: "" } },
+            restore = { savedList ->
+                NavigationStack(
+                    *savedList
+                        .mapNotNull { className ->
+                            when (className) {
+                                "TaggedPage" -> TaggedPage()
+                                "CameraPage" -> CameraPage()
+                                "MainPage" -> MainPage()
+                                "ChatPage" -> ChatPage()
+                                "AnalInsulinPage" -> AnalInsulinPage()
+                                "AnalBloodSugarPage" -> AnalBloodSugarPage()
+                                "AnalExercisePage" -> AnalExercisePage()
+                                "AnalMealPage" -> AnalMealPage()
+                                else -> null
+                            }
+                        }.toTypedArray(),
+                )
+            },
+        )
     val navigationStack =
-        remember {
-            NavigationStack<Page>(TaggedPage())
+        rememberSaveable(saver = navigationStackSaver) {
+            NavigationStack(TaggedPage())
         }
 
     AnimatedContent(targetState = navigationStack.lastWithIndex(), transitionSpec = {
@@ -41,10 +85,19 @@ fun KinggoRingCommon() {
     }) { (_, page) ->
         when (page) {
             is TaggedPage -> {
-                TaggedScreen()
+                TaggedScreen {
+                    navigationStack.push(CameraPage())
+                }
             }
             is CameraPage -> {
-                CameraScreen()
+                CameraScreen(
+                    onBack = { resetSelectedPicture ->
+                        if (resetSelectedPicture) {
+                            selectedPictureIndex.value = 0
+                        }
+                        navigationStack.back()
+                    },
+                )
             }
             is MainPage -> {
                 MainScreen()

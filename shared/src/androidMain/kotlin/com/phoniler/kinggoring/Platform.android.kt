@@ -1,6 +1,7 @@
 package com.phoniler.kinggoring
 
 import androidx.compose.ui.graphics.ImageBitmap
+import kotlinx.coroutines.Dispatchers
 import java.util.UUID
 
 class AndroidStorableImage(
@@ -10,3 +11,5 @@ class AndroidStorableImage(
 actual fun createUUID(): String = UUID.randomUUID().toString()
 
 actual typealias PlatformStorableImage = AndroidStorableImage
+
+actual val ioDispatcher = Dispatchers.IO
