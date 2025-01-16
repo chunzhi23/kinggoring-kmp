@@ -73,7 +73,7 @@ fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>)
         )
     val navigationStack =
         rememberSaveable(saver = navigationStackSaver) {
-            NavigationStack(TaggedPage())
+            NavigationStack(MainPage())
         }
 
     AnimatedContent(targetState = navigationStack.lastWithIndex(), transitionSpec = {
@@ -85,9 +85,11 @@ fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>)
     }) { (_, page) ->
         when (page) {
             is TaggedPage -> {
-                TaggedScreen {
-                    navigationStack.push(CameraPage())
-                }
+                TaggedScreen(
+                    onMeal = {
+                        navigationStack.push(CameraPage())
+                    },
+                )
             }
             is CameraPage -> {
                 CameraScreen(

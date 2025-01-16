@@ -29,7 +29,7 @@ import com.phoniler.kinggoring.icon.IconForkSpoon
 import com.phoniler.kinggoring.icon.IconSyringe
 
 @Composable
-fun TaggedScreen(onClickMeal: () -> Unit) {
+fun TaggedScreen(onMeal: () -> Unit) {
     val isBloodSugar = remember { mutableStateOf(false) }
 
     Box(
@@ -71,7 +71,7 @@ fun TaggedScreen(onClickMeal: () -> Unit) {
                     GridItem(
                         icon = IconForkSpoon,
                         label = "식사",
-                        onClickAction = onClickMeal,
+                        onClickAction = onMeal,
                     )
                 }
             }
