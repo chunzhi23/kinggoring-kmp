@@ -89,44 +89,47 @@ fun MainBottomNavigationBar(navState: MutableState<NavType>) {
                 .background(Color.White),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        NavType.entries.forEachIndexed { idx, navItem ->
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = { navState.value = navItem },
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = if (navState.value == navItem) Color(0xFF007AFF) else Color.White,
-                        contentColor = if (navState.value == navItem) Color.White else Color.Black,
-                    ),
-                shape = RoundedCornerShape(0.dp),
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+        NavType.entries.forEach { navItem ->
+            if (navItem != NavType.NOTIFICATION) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = { navState.value = navItem },
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = if (navState.value == navItem) Color(0xFF007AFF) else Color.White,
+                            contentColor = if (navState.value == navItem) Color.White else Color.Black,
+                        ),
+                    shape = RoundedCornerShape(0.dp),
                 ) {
-                    when (navItem) {
-                        NavType.HOME -> {
-                            Icon(
-                                imageVector = IconHome,
-                                contentDescription = "Home",
-                                modifier = Modifier.size(24.dp),
-                            )
-                            Text("홈")
-                        }
-                        NavType.CHATBOT -> {
-                            Icon(
-                                imageVector = IconChat,
-                                contentDescription = "Chat",
-                                modifier = Modifier.size(24.dp),
-                            )
-                            Text("채팅")
-                        }
-                        NavType.MYPAGE -> {
-                            Icon(
-                                imageVector = IconPerson,
-                                contentDescription = "My page",
-                                modifier = Modifier.size(24.dp),
-                            )
-                            Text("프로필")
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        when (navItem) {
+                            NavType.HOME -> {
+                                Icon(
+                                    imageVector = IconHome,
+                                    contentDescription = "Home",
+                                    modifier = Modifier.size(24.dp),
+                                )
+                                Text("홈")
+                            }
+                            NavType.CHATBOT -> {
+                                Icon(
+                                    imageVector = IconChat,
+                                    contentDescription = "Chat",
+                                    modifier = Modifier.size(24.dp),
+                                )
+                                Text("채팅")
+                            }
+                            NavType.MYPAGE -> {
+                                Icon(
+                                    imageVector = IconPerson,
+                                    contentDescription = "My page",
+                                    modifier = Modifier.size(24.dp),
+                                )
+                                Text("프로필")
+                            }
+                            else -> {}
                         }
                     }
                 }
