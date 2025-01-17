@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
 kotlin {

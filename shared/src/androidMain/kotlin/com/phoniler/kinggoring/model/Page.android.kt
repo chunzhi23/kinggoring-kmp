@@ -1,17 +1,26 @@
 package com.phoniler.kinggoring.model
 
-actual class TaggedPage actual constructor() : Page
+import android.os.Parcelable
+import com.phoniler.kinggoring.type.AnalType
+import kotlinx.parcelize.Parcelize
 
-actual class CameraPage actual constructor() : Page
+@Parcelize
+actual class TaggedPage actual constructor() :
+    Page,
+    Parcelable
 
-actual class MainPage actual constructor() : Page
+@Parcelize
+actual class CameraPage actual constructor() :
+    Page,
+    Parcelable
 
-actual class ChatPage actual constructor() : Page
+@Parcelize
+actual class MainPage actual constructor() :
+    Page,
+    Parcelable
 
-actual class AnalInsulinPage actual constructor() : Page
-
-actual class AnalBloodSugarPage actual constructor() : Page
-
-actual class AnalExercisePage actual constructor() : Page
-
-actual class AnalMealPage actual constructor() : Page
+@Parcelize
+actual class AnalysisPage actual constructor(
+    actual val analView: AnalType,
+) : Page,
+    Parcelable

@@ -6,26 +6,19 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.phoniler.kinggoring.model.AnalBloodSugarPage
-import com.phoniler.kinggoring.model.AnalExercisePage
-import com.phoniler.kinggoring.model.AnalInsulinPage
-import com.phoniler.kinggoring.model.AnalMealPage
+import com.phoniler.kinggoring.model.AnalysisPage
 import com.phoniler.kinggoring.model.CameraPage
-import com.phoniler.kinggoring.model.ChatPage
 import com.phoniler.kinggoring.model.MainPage
 import com.phoniler.kinggoring.model.Page
 import com.phoniler.kinggoring.model.PictureData
 import com.phoniler.kinggoring.model.TaggedPage
-import com.phoniler.kinggoring.view.AnalBloodSugarScreen
-import com.phoniler.kinggoring.view.AnalExerciseScreen
-import com.phoniler.kinggoring.view.AnalInsulinScreen
-import com.phoniler.kinggoring.view.AnalMealScreen
+import com.phoniler.kinggoring.view.AnalysisScreen
 import com.phoniler.kinggoring.view.CameraScreen
-import com.phoniler.kinggoring.view.ChatScreen
 import com.phoniler.kinggoring.view.MainScreen
 import com.phoniler.kinggoring.view.NavigationStack
 import com.phoniler.kinggoring.view.TaggedScreen
@@ -49,32 +42,25 @@ fun KinggoRingCommon(dependencies: Dependencies) {
 @Composable
 fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>) {
     val selectedPictureIndex = rememberSaveable { mutableStateOf(0) }
-    val navigationStackSaver =
-        Saver<NavigationStack<Page>, List<String>>(
-            save = { it.stack.map { page -> page::class.simpleName ?: "" } },
-            restore = { savedList ->
-                NavigationStack(
-                    *savedList
-                        .mapNotNull { className ->
-                            when (className) {
-                                "TaggedPage" -> TaggedPage()
-                                "CameraPage" -> CameraPage()
-                                "MainPage" -> MainPage()
-                                "ChatPage" -> ChatPage()
-                                "AnalInsulinPage" -> AnalInsulinPage()
-                                "AnalBloodSugarPage" -> AnalBloodSugarPage()
-                                "AnalExercisePage" -> AnalExercisePage()
-                                "AnalMealPage" -> AnalMealPage()
-                                else -> null
-                            }
-                        }.toTypedArray(),
-                )
-            },
-        )
     val navigationStack =
-        rememberSaveable(saver = navigationStackSaver) {
+        rememberSaveable(
+            saver =
+                listSaver<NavigationStack<Page>, Page>(
+                    restore = { NavigationStack(*it.toTypedArray()) },
+                    save = { it.stack },
+                ),
+        ) {
             NavigationStack(MainPage())
         }
+
+    val externalEvents = LocalInternalEvents.current
+    LaunchedEffect(Unit) {
+        externalEvents.collect {
+            if (it == ExternalKinggoRingEvent.ReturnBack) {
+                navigationStack.back()
+            }
+        }
+    }
 
     AnimatedContent(targetState = navigationStack.lastWithIndex(), transitionSpec = {
         val previousIdx = initialState.index
@@ -102,22 +88,16 @@ fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>)
                 )
             }
             is MainPage -> {
-                MainScreen()
+                MainScreen(
+                    onAnalClick = { target ->
+                        navigationStack.push(AnalysisPage(target))
+                    },
+                )
             }
-            is ChatPage -> {
-                ChatScreen()
-            }
-            is AnalInsulinPage -> {
-                AnalInsulinScreen()
-            }
-            is AnalBloodSugarPage -> {
-                AnalBloodSugarScreen()
-            }
-            is AnalExercisePage -> {
-                AnalExerciseScreen()
-            }
-            is AnalMealPage -> {
-                AnalMealScreen()
+            is AnalysisPage -> {
+                AnalysisScreen(
+                    analView = page.analView,
+                )
             }
         }
     }

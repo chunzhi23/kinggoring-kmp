@@ -1,17 +1,13 @@
 package com.phoniler.kinggoring.model
 
+import com.phoniler.kinggoring.type.AnalType
+
 actual class TaggedPage actual constructor() : Page
 
 actual class CameraPage actual constructor() : Page
 
 actual class MainPage actual constructor() : Page
 
-actual class ChatPage actual constructor() : Page
-
-actual class AnalInsulinPage actual constructor() : Page
-
-actual class AnalBloodSugarPage actual constructor() : Page
-
-actual class AnalExercisePage actual constructor() : Page
-
-actual class AnalMealPage actual constructor() : Page
+actual class AnalysisPage actual constructor(
+    actual val analView: AnalType,
+) : Page
