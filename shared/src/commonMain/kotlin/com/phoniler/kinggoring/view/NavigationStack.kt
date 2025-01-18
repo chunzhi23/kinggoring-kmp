@@ -22,4 +22,10 @@ class NavigationStack<T>(
     }
 
     fun lastWithIndex() = stack.withIndex().last()
+
+    fun replaceLast(t: T) {
+        if (stack.isNotEmpty()) {
+            stack[stack.lastIndex] = t
+        }
+    }
 }

@@ -1,8 +1,11 @@
 package com.phoniler.kinggoring
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -17,6 +20,7 @@ import com.phoniler.kinggoring.model.MainPage
 import com.phoniler.kinggoring.model.Page
 import com.phoniler.kinggoring.model.PictureData
 import com.phoniler.kinggoring.model.TaggedPage
+import com.phoniler.kinggoring.type.NavType
 import com.phoniler.kinggoring.view.AnalysisScreen
 import com.phoniler.kinggoring.view.CameraScreen
 import com.phoniler.kinggoring.view.MainScreen
@@ -66,8 +70,14 @@ fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>)
         val previousIdx = initialState.index
         val currentIdx = targetState.index
         val multiplier = if (previousIdx < currentIdx) 1 else -1
-        slideInVertically { w -> multiplier * w } togetherWith
-            slideOutVertically { w -> multiplier * -1 * w }
+        if (initialState.value is MainPage && targetState.value is AnalysisPage) {
+            fadeIn() togetherWith fadeOut(tween(durationMillis = 500, 500))
+        } else if (initialState.value is AnalysisPage && targetState.value is MainPage) {
+            fadeIn() togetherWith fadeOut(tween(delayMillis = 150))
+        } else {
+            slideInHorizontally { w -> multiplier * w } togetherWith
+                slideOutHorizontally { w -> multiplier * -1 * w }
+        }
     }) { (_, page) ->
         when (page) {
             is TaggedPage -> {
@@ -89,6 +99,7 @@ fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>)
             }
             is MainPage -> {
                 MainScreen(
+                    mainView = page.mainView,
                     onAnalClick = { target ->
                         navigationStack.push(AnalysisPage(target))
                     },
@@ -97,6 +108,13 @@ fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>)
             is AnalysisPage -> {
                 AnalysisScreen(
                     analView = page.analView,
+                    onBackClick = {
+                        navigationStack.back()
+                    },
+                    onChatClick = {
+                        navigationStack.back()
+                        navigationStack.replaceLast(MainPage(NavType.CHATBOT))
+                    },
                 )
             }
         }

@@ -21,7 +21,7 @@ data class AnalItem(
     val icon: ImageVector,
 )
 
-val MainList: List<AnalItem> =
+val AnalList: List<AnalItem> =
     listOf(
         AnalItem("인슐린", AnalType.INSULIN, IconSyringe),
         AnalItem("혈당 측정", AnalType.BLOOD_SUGAR, IconFinance),

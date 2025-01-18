@@ -42,19 +42,22 @@ import com.phoniler.kinggoring.component.NotificationItem
 import com.phoniler.kinggoring.component.SidebarItem
 import com.phoniler.kinggoring.icon.IconChat
 import com.phoniler.kinggoring.icon.IconPerson
+import com.phoniler.kinggoring.type.AnalList
 import com.phoniler.kinggoring.type.AnalType
-import com.phoniler.kinggoring.type.MainList
 import com.phoniler.kinggoring.type.NavType
 import kotlinx.datetime.Instant
 
 @Composable
-fun MainScreen(onAnalClick: (target: AnalType) -> Unit) {
-    val navState = remember { mutableStateOf(NavType.HOME) }
+fun MainScreen(
+    mainView: NavType,
+    onAnalClick: (target: AnalType) -> Unit,
+) {
+    val navState = remember { mutableStateOf(mainView) }
     val previousNavState = remember { mutableStateOf<NavType?>(null) }
     val isPanelOpen = remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column {
             MainTopAppBar(
                 title = "킹고링",
                 navValue = navState.value,
@@ -99,7 +102,7 @@ fun MainScreen(onAnalClick: (target: AnalType) -> Unit) {
 }
 
 @Composable
-fun ContentView(
+private fun ContentView(
     navValue: NavType,
     isPanelValue: Boolean,
     onDarkenClick: () -> Unit,
@@ -161,7 +164,7 @@ fun ContentView(
 }
 
 @Composable
-fun HomeView(onAnalClick: (target: AnalType) -> Unit) {
+private fun HomeView(onAnalClick: (target: AnalType) -> Unit) {
     val itemWidth = 120.dp
     val itemSpacing = 24.dp
 
@@ -191,7 +194,7 @@ fun HomeView(onAnalClick: (target: AnalType) -> Unit) {
     ) {
         Spacer(modifier = Modifier.height(48.dp))
 
-        val filteredItems = MainList.filter { mainItem -> mainItem.type in items }
+        val filteredItems = AnalList.filter { analItem -> analItem.type in items }
 
         for (row in filteredItems.chunked(columns)) {
             Row(
@@ -241,7 +244,7 @@ fun HomeView(onAnalClick: (target: AnalType) -> Unit) {
 expect fun getScreenWidth(): Dp
 
 @Composable
-fun ChatView() {
+private fun ChatView() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -258,7 +261,7 @@ fun ChatView() {
 }
 
 @Composable
-fun MyPageView() {
+private fun MyPageView() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -275,7 +278,7 @@ fun MyPageView() {
 }
 
 @Composable
-fun NotificationView() {
+private fun NotificationView() {
     Column(
         modifier =
             Modifier
