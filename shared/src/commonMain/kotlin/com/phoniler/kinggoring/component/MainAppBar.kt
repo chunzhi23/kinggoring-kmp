@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.phoniler.kinggoring.icon.IconChat
+import com.phoniler.kinggoring.icon.IconDevices
 import com.phoniler.kinggoring.icon.IconHome
 import com.phoniler.kinggoring.icon.IconMenu
 import com.phoniler.kinggoring.icon.IconNotifications
@@ -135,6 +136,15 @@ fun MainBottomNavigationBar(
                                         modifier = Modifier.size(24.dp),
                                     )
                                     Text("채팅")
+                                }
+
+                                NavType.DEVICE -> {
+                                    Icon(
+                                        imageVector = IconDevices,
+                                        contentDescription = "Devices",
+                                        modifier = Modifier.size(24.dp),
+                                    )
+                                    Text("장치")
                                 }
 
                                 NavType.MYPAGE -> {

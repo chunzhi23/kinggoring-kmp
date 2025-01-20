@@ -24,8 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.phoniler.kinggoring.icon.IconBarChart
 import com.phoniler.kinggoring.icon.IconExercise
+import com.phoniler.kinggoring.icon.IconFinance
 import com.phoniler.kinggoring.icon.IconForkSpoon
 import com.phoniler.kinggoring.icon.IconSyringe
 
@@ -60,7 +60,7 @@ fun TaggedScreen() {
                                 onClickAction = {},
                             )
                             GridItem(
-                                icon = IconBarChart,
+                                icon = IconFinance,
                                 label = "혈당 측정",
                                 onClickAction = { isBloodSugar.value = true },
                             )

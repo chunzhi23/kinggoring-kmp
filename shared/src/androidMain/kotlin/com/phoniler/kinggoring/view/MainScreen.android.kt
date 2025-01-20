@@ -1,12 +1,15 @@
 package com.phoniler.kinggoring.view
 
+import android.Manifest
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
 import android.nfc.NfcManager
 import android.os.Build
+import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +27,9 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.phoniler.kinggoring.component.deviceSettingsItem
+import com.phoniler.kinggoring.icon.IconDevices
+import com.phoniler.kinggoring.icon.IconNfc
 
 @Composable
 actual fun getScreenWidth(): Dp {
@@ -36,7 +42,7 @@ actual fun getScreenWidth(): Dp {
 @Composable
 actual fun DeviceView() {
     val bluetoothPermissionState =
-        rememberPermissionState(android.Manifest.permission.BLUETOOTH_CONNECT)
+        rememberPermissionState(Manifest.permission.BLUETOOTH_CONNECT)
     if (bluetoothPermissionState.status.isGranted) {
         DeviceViewWithGrantedPermission()
     } else {
@@ -54,10 +60,12 @@ fun DeviceViewWithGrantedPermission() {
     val nfcManager = context.getSystemService(Context.NFC_SERVICE) as NfcManager
     val nfcAdapter = nfcManager.defaultAdapter
     var isNfcEnabled by remember { mutableStateOf(false) }
+    val intentNfc = Intent(Settings.ACTION_NFC_SETTINGS)
 
     val btManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     val btAdapter = btManager.adapter
     var isBtEnabled by remember { mutableStateOf(false) }
+    val intentBt = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
 
     fun updateStatus() {
         isNfcEnabled = nfcAdapter?.isEnabled == true
@@ -82,6 +90,11 @@ fun DeviceViewWithGrantedPermission() {
     }
 
     Column {
-        Text(if (isNfcEnabled) "NFC 활성화됨" else "NFC 비활성화됨")
+        deviceSettingsItem("NFC", IconNfc, isNfcEnabled) {
+            context.startActivity(intentNfc)
+        }
+        deviceSettingsItem("키링 연결", IconDevices, isBtEnabled) {
+            context.startActivity(intentBt)
+        }
     }
 }
