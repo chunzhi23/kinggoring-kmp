@@ -15,7 +15,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun KinggoRingAndroid(externalEvents: Flow<ExternalKinggoRingEvent>) {
+fun KinggoRingAndroid(
+    externalEvents: Flow<ExternalKinggoRingEvent>,
+    intentData: Any?,
+    finishApp: () -> Unit,
+) {
     val context: Context = LocalContext.current
     val ioScope = rememberCoroutineScope { ioDispatcher }
     val dependencies =
@@ -23,7 +27,9 @@ fun KinggoRingAndroid(externalEvents: Flow<ExternalKinggoRingEvent>) {
             getDependencies(context, ioScope, externalEvents)
         }
     KinggoRingTheme {
-        KinggoRingCommon(dependencies)
+        KinggoRingCommon(dependencies, intentData) {
+            finishApp()
+        }
     }
 }
 

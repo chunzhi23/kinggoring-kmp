@@ -16,3 +16,7 @@ actual fun getScreenWidth(): Dp {
             .dp
     return screenWidth
 }
+
+@Composable
+actual fun DeviceView() {
+}

@@ -1,5 +1,6 @@
 package com.phoniler.kinggoring.view
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,61 +30,68 @@ import com.phoniler.kinggoring.icon.IconForkSpoon
 import com.phoniler.kinggoring.icon.IconSyringe
 
 @Composable
-fun TaggedScreen(onMeal: () -> Unit) {
+fun TaggedScreen() {
     val isBloodSugar = remember { mutableStateOf(false) }
+    val isCamera = remember { mutableStateOf(false) }
 
-    Box(
-        modifier =
-            Modifier.fillMaxSize().background(Color.Black).clickable {
-                isBloodSugar.value = false
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        if (!isBloodSugar.value) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    GridItem(
-                        icon = IconSyringe,
-                        label = "인슐린",
-                        onClickAction = {},
-                    )
-                    GridItem(
-                        icon = IconBarChart,
-                        label = "혈당 측정",
-                        onClickAction = { isBloodSugar.value = true },
-                    )
-                }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    GridItem(
-                        icon = IconExercise,
-                        label = "운동",
-                        onClickAction = {},
-                    )
-                    GridItem(
-                        icon = IconForkSpoon,
-                        label = "식사",
-                        onClickAction = onMeal,
-                    )
-                }
-            }
+    Crossfade(targetState = isCamera.value) { isCameraActive ->
+        if (isCameraActive) {
+            CameraScreen { isCamera.value = false }
         } else {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Box(
+                modifier =
+                    Modifier.fillMaxSize().background(Color.Black).clickable {
+                        isBloodSugar.value = false
+                    },
+                contentAlignment = Alignment.Center,
             ) {
-                Text("혈당 측정", color = Color.White)
-                BloodSugarButton("고혈당", Color.Yellow, onClick = { /* 고혈당 */ })
-                BloodSugarButton("정상", Color.Green, onClick = { /* 정상 */ })
-                BloodSugarButton("저혈당", Color.Red, onClick = { /* 저혈당 */ })
+                if (!isBloodSugar.value) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            GridItem(
+                                icon = IconSyringe,
+                                label = "인슐린",
+                                onClickAction = {},
+                            )
+                            GridItem(
+                                icon = IconBarChart,
+                                label = "혈당 측정",
+                                onClickAction = { isBloodSugar.value = true },
+                            )
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            GridItem(
+                                icon = IconExercise,
+                                label = "운동",
+                                onClickAction = {},
+                            )
+                            GridItem(
+                                icon = IconForkSpoon,
+                                label = "식사",
+                                onClickAction = { isCamera.value = true },
+                            )
+                        }
+                    }
+                } else {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text("혈당 측정", color = Color.White)
+                        BloodSugarButton("고혈당", Color.Yellow, onClick = { /* 고혈당 */ })
+                        BloodSugarButton("정상", Color.Green, onClick = { /* 정상 */ })
+                        BloodSugarButton("저혈당", Color.Red, onClick = { /* 저혈당 */ })
+                    }
+                }
             }
         }
     }

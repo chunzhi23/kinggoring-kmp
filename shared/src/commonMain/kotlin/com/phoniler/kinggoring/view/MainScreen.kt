@@ -111,6 +111,7 @@ private fun ContentView(
     when (navValue) {
         NavType.HOME -> HomeView(onAnalClick)
         NavType.CHATBOT -> ChatView()
+        NavType.DEVICE -> DeviceView()
         NavType.MYPAGE -> MyPageView()
         NavType.NOTIFICATION -> NotificationView()
     }
@@ -259,6 +260,9 @@ private fun ChatView() {
         }
     }
 }
+
+@Composable
+expect fun DeviceView()
 
 @Composable
 private fun MyPageView() {

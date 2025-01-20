@@ -13,12 +13,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.phoniler.kinggoring.model.AnalysisPage
 import com.phoniler.kinggoring.model.CameraPage
 import com.phoniler.kinggoring.model.MainPage
 import com.phoniler.kinggoring.model.Page
-import com.phoniler.kinggoring.model.PictureData
 import com.phoniler.kinggoring.model.TaggedPage
 import com.phoniler.kinggoring.type.NavType
 import com.phoniler.kinggoring.view.AnalysisScreen
@@ -34,17 +32,26 @@ enum class ExternalKinggoRingEvent {
 }
 
 @Composable
-fun KinggoRingCommon(dependencies: Dependencies) {
+fun KinggoRingCommon(
+    dependencies: Dependencies,
+    intentData: Any?,
+    finishApp: () -> Unit,
+) {
     CompositionLocalProvider(
         LocalImageProvider provides dependencies.imageProvider,
         LocalInternalEvents provides dependencies.externalEvents,
     ) {
-        KinggoRingWithProvidedDependencies(dependencies.pictures)
+        KinggoRingWithProvidedDependencies(intentData) {
+            finishApp()
+        }
     }
 }
 
 @Composable
-fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>) {
+fun KinggoRingWithProvidedDependencies(
+    intentData: Any?,
+    finishApp: () -> Unit,
+) {
     val selectedPictureIndex = rememberSaveable { mutableStateOf(0) }
     val navigationStack =
         rememberSaveable(
@@ -61,9 +68,17 @@ fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>)
     LaunchedEffect(Unit) {
         externalEvents.collect {
             if (it == ExternalKinggoRingEvent.ReturnBack) {
-                navigationStack.back()
+                if (navigationStack.stack.size == 1) {
+                    finishApp()
+                } else {
+                    navigationStack.back()
+                }
             }
         }
+    }
+
+    intentData?.let {
+        navigationStack.replaceLast(TaggedPage())
     }
 
     AnimatedContent(targetState = navigationStack.lastWithIndex(), transitionSpec = {
@@ -81,11 +96,7 @@ fun KinggoRingWithProvidedDependencies(pictures: SnapshotStateList<PictureData>)
     }) { (_, page) ->
         when (page) {
             is TaggedPage -> {
-                TaggedScreen(
-                    onMeal = {
-                        navigationStack.push(CameraPage())
-                    },
-                )
+                TaggedScreen()
             }
             is CameraPage -> {
                 CameraScreen(

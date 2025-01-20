@@ -19,8 +19,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val data: Any? = intent?.data
+
         setContent {
-            KinggoRingAndroid(externalEvents)
+            KinggoRingAndroid(externalEvents, data) {
+                finish()
+            }
         }
         onBackPressedDispatcher.addCallback {
             externalEvents.tryEmit(ExternalKinggoRingEvent.ReturnBack)
